@@ -22,7 +22,12 @@ public class EmployeeService {
     }
 
     public Employee updateEmployee(Long id, Employee employee) {
-        return employeeRepository.save(employee);
+        Employee existing = employeeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Employee not found"));
+        existing.setName(employee.getName());
+        existing.setEmail(employee.getEmail());
+        existing.setDepartment(employee.getDepartment());
+        return employeeRepository.save(existing);
     }
 
     public void deleteEmployee(Long id) {

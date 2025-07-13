@@ -1,3 +1,12 @@
+package com.example.Employee_management_system;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+
 //create a employee model with name Employee
 
 @Entity
