@@ -5,39 +5,317 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Management System</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f4f4f4; }
-        form { margin-bottom: 20px; }
-        input, select { padding: 6px; margin-right: 10px; }
-        button { padding: 6px 12px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: transparent;
+            padding: 0 5px;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 12px;
+            color: #667eea;
+            background: white;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #e1e8ed;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+            transition: background 0.3s ease;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 15px 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Employee Management System</h1>
-    <form id="employeeForm">
-        <input type="hidden" id="employeeId">
-        <input type="text" id="name" placeholder="Name" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="text" id="department" placeholder="Department" required>
-        <button type="submit">Add / Update Employee</button>
-    </form>
-    <table id="employeeTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Employee rows will go here -->
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Employee Management System</h1>
+        
+        <div class="form-container">
+            <form id="employeeForm">
+                <input type="hidden" id="employeeId">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <input type="text" id="name" placeholder=" " required>
+                        <label for="name">Full Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder=" " required>
+                        <label for="email">Email Address</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="department" placeholder=" " required>
+                        <label for="department">Department</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Add Employee</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table id="employeeTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Employee rows will go here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
         const apiUrl = '/api/employees';
         const form = document.getElementById('employeeForm');
@@ -46,27 +324,59 @@
         const nameField = document.getElementById('name');
         const emailField = document.getElementById('email');
         const deptField = document.getElementById('department');
+        const submitBtn = form.querySelector('.btn');
+
+        // Mock data for demonstration
+        let employees = [
+            { id: 1, name: 'John Doe', email: 'john@company.com', department: 'Engineering' },
+            { id: 2, name: 'Jane Smith', email: 'jane@company.com', department: 'Marketing' },
+            { id: 3, name: 'Mike Johnson', email: 'mike@company.com', department: 'Sales' }
+        ];
+
+        function showLoading() {
+            tableBody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div></td></tr>';
+        }
+
+        function showEmptyState() {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+                        </svg>
+                        <h3>No employees found</h3>
+                        <p>Add your first employee using the form above</p>
+                    </td>
+                </tr>
+            `;
+        }
 
         function fetchEmployees() {
-            fetch(apiUrl)
-                .then(res => res.json())
-                .then(data => {
-                    tableBody.innerHTML = '';
-                    data.forEach(emp => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${emp.id}</td>
-                            <td>${emp.name}</td>
-                            <td>${emp.email}</td>
-                            <td>${emp.department}</td>
-                            <td>
-                                <button onclick="editEmployee(${emp.id}, '${emp.name}', '${emp.email}', '${emp.department}')">Edit</button>
-                                <button onclick="deleteEmployee(${emp.id})">Delete</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                if (employees.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                tableBody.innerHTML = '';
+                employees.forEach(emp => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${emp.id}</td>
+                        <td>${emp.name}</td>
+                        <td>${emp.email}</td>
+                        <td>${emp.department}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editEmployee(${emp.id}, '${emp.name}', '${emp.email}', '${emp.department}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteEmployee(${emp.id})">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
                 });
+            }, 500);
         }
 
         form.onsubmit = function(e) {
@@ -77,25 +387,28 @@
                 email: emailField.value,
                 department: deptField.value
             };
-            if (id) {
-                fetch(`${apiUrl}/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(employee)
-                }).then(() => {
-                    form.reset();
-                    fetchEmployees();
-                });
-            } else {
-                fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(employee)
-                }).then(() => {
-                    form.reset();
-                    fetchEmployees();
-                });
-            }
+
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                if (id) {
+                    // Update existing employee
+                    const index = employees.findIndex(emp => emp.id == id);
+                    if (index !== -1) {
+                        employees[index] = { ...employee, id: parseInt(id) };
+                    }
+                } else {
+                    // Add new employee
+                    const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
+                    employees.push({ ...employee, id: newId });
+                }
+
+                form.reset();
+                submitBtn.textContent = 'Add Employee';
+                submitBtn.disabled = false;
+                fetchEmployees();
+            }, 800);
         };
 
         window.editEmployee = function(id, name, email, department) {
@@ -103,14 +416,22 @@
             nameField.value = name;
             emailField.value = email;
             deptField.value = department;
+            
+            submitBtn.textContent = 'Update Employee';
+            
+            // Scroll to form
+            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
         };
 
         window.deleteEmployee = function(id) {
-            fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
-                .then(() => fetchEmployees());
+            if (confirm('Are you sure you want to delete this employee?')) {
+                employees = employees.filter(emp => emp.id != id);
+                fetchEmployees();
+            }
         };
 
+        // Initialize
         fetchEmployees();
     </script>
 </body>
-</html> 
+</html>
